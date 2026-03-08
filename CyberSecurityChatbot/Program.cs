@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System;
+using System.Threading;
 using NAudio.Wave;
 internal class Program
 {
@@ -38,6 +39,22 @@ internal class Program
         Console.WriteLine("****************************************");
         Console.ResetColor();
 
-        
+        //greeting interface
+        Console.ForegroundColor = ConsoleColor.Green;
+        TypeText("\nWelcome to the Cybersecurity Awareness Chatbot! \nI'm here to help you learn about cybersecurity and how to stay safe online.", 60);
+        Console.ResetColor();
+
+        Console.ReadLine();
+    }
+    //Typewriter effect
+    static void TypeText(String msg, int delay = 30)
+    {
+               foreach (char c in msg)
+        {
+            Console.Write(c);
+            Thread.Sleep(delay);
+        }
+        Console.WriteLine();
+
     }
 }
