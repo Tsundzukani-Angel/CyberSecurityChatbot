@@ -41,7 +41,7 @@ internal class Program
 
         //ask for user's name
         Console.ForegroundColor = ConsoleColor.Green;
-        TypeText("\nChatbot: What's your name? ");
+        TypeText("\nWelcome to the Cybersecurity Awareness Chatbot! \nI'm here to help you learn about cybersecurity and how to stay safe online.", 60);
         Console.ResetColor();
 
         Console.Write("You: ");
