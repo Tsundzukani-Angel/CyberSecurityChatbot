@@ -65,7 +65,7 @@ namespace CyberSecurityChatbot
                         Console.Write($"\n{name}: ");
                         Console.ResetColor();
 
-                        string userInput = Console.ReadLine();
+                        string userInput = Console.ReadLine().ToLower();
 
                         //Validates user input to ensure it's not empty and is a valid number corresponding to the menu options
                         if (string.IsNullOrWhiteSpace(userInput))
@@ -74,6 +74,35 @@ namespace CyberSecurityChatbot
                             UIHelper.TypeText("Input cannot be empty.");
                             continue;
                             Console.ResetColor();
+                        }
+
+                        //handle keyword based input using string manipulation
+                        if (userInput.Contains("password"))
+                        {
+                            PasswordSafetyMenu();
+                            continue;
+                        }
+                        else if (userInput.Contains("phishing"))
+                        {
+                            PhishingMenu();
+                            continue;
+                        }
+                        else if (userInput.Contains("virus"))
+                        {
+                            ComputerVirusMenu();
+                            continue;
+                        }
+                        else if (userInput.Contains("browsing"))
+                        {
+                            SafeBrowsingMenu();
+                            continue;
+                        }
+                        else if (userInput.Contains("exit"))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            UIHelper.TypeText($"Stay safe online! Goodbye {name}");
+                            Console.ResetColor();
+                            break;
                         }
 
                         if (!int.TryParse(userInput, out int choice))
@@ -151,7 +180,7 @@ namespace CyberSecurityChatbot
                 Console.ResetColor();
             }
         }
-        //displays the chaybot menu options
+        //displays the chatbot menu options
         public void DisplayMenu()
         {
            Console.ForegroundColor = ConsoleColor.Cyan;
@@ -202,15 +231,19 @@ namespace CyberSecurityChatbot
 
                 if (!int.TryParse(option, out int choice))
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     UIHelper.TypeText("Invalid input.");
+                    Console.ResetColor();
+
                     continue;
                 }
 
-                UIHelper.ShowTyping();
-
+                
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.Write("Chatbot: ");
                 Console.ResetColor();
+                
+                UIHelper.ShowTyping();
 
                 Console.ForegroundColor = ConsoleColor.Green;
                 switch (choice)
@@ -294,15 +327,17 @@ namespace CyberSecurityChatbot
                 
                 if (!int.TryParse(option, out int choice))
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     UIHelper.TypeText("Invalid input.");
+                    Console.ResetColor();
                     continue;
                 }
 
-                UIHelper.ShowTyping();
 
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.Write("Chatbot: ");
                 Console.ResetColor();
+                UIHelper.ShowTyping();
 
                 Console.ForegroundColor = ConsoleColor.Green;
                 switch (choice)
@@ -384,15 +419,17 @@ namespace CyberSecurityChatbot
 
                 if (!int.TryParse(option, out int choice))
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     UIHelper.TypeText("Invalid input.");
+                    Console.ResetColor();
                     continue;
                 }
 
-                UIHelper.ShowTyping();
-
+                
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.Write("Chatbot: ");
                 Console.ResetColor();
+                UIHelper.ShowTyping();
 
                 Console.ForegroundColor = ConsoleColor.Green;
                 switch (choice)
@@ -474,15 +511,17 @@ namespace CyberSecurityChatbot
 
                 if (!int.TryParse(option, out int choice))
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     UIHelper.TypeText("Invalid input.");
+                    Console.ResetColor();
                     continue;
                 }
 
-                UIHelper.ShowTyping();
-
+                
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.Write("Chatbot: ");
                 Console.ResetColor();
+                UIHelper.ShowTyping();
 
                 Console.ForegroundColor = ConsoleColor.Green;
                 switch (choice)

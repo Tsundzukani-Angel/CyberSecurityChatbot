@@ -38,20 +38,19 @@ namespace CyberSecurityChatbot
         {
             foreach (char c in msg)
             { 
-                //Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write(c);
                 Thread.Sleep(delay);
 
             }
-            //Console.ResetColor();
+            
             Console.WriteLine();
 
         }
+        //delay feature
         public static void ShowTyping(int delay = 1000)
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.Write("thinking");
-
+            
             for (int i = 0; i < 3; i++)
             {
                 Thread.Sleep(300);
