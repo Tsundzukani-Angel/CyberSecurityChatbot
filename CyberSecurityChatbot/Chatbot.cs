@@ -72,8 +72,9 @@ namespace CyberSecurityChatbot
                         {
                             Console.ForegroundColor = ConsoleColor.DarkRed;
                             UIHelper.TypeText("Input cannot be empty.");
-                            continue;
                             Console.ResetColor();
+                            continue;
+                           
                         }
 
                         //handle keyword based input using string manipulation
