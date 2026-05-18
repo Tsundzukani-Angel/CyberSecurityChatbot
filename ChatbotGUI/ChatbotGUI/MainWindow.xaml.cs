@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Collections.Generic;
+using System.Speech.Synthesis;
 
 namespace ChatbotGUI
 {
@@ -16,6 +18,9 @@ namespace ChatbotGUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        ChatbotEngine bot = new ChatbotEngine();
+        GreetingVoiceSpeech speech = new GreetingVoiceSpeech();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -23,29 +28,63 @@ namespace ChatbotGUI
             "Enter your name:",
             "Cybersecurity Chatbot",
             "User"
-);
+           );
+
+            LoadWelcomeMessage();
         }
-        ChatbotEngine bot = new ChatbotEngine();
+
+
         string userName = "";
-        private void btnSend_Click(object sender, RoutedEventArgs e)
+
+        private async void btnSend_Click(object sender, RoutedEventArgs e)
         {
             string userInput = txtInput.Text;
-            string response = bot.GetResponse(userInput);
+
 
             if (string.IsNullOrWhiteSpace(userInput))
                 return;
 
             rtbChat.Document.Blocks.Add(new Paragraph(new Run(userName + ": " + userInput)));
-            
-            rtbChat.Document.Blocks.Add(new Paragraph(new Run("Chatbot: " + response)));
             txtInput.Clear();
+            await TypeWriterEffect("Chatbot is typing...");
+
+            string response = bot.GetResponse(userInput);
+
+
+            await TypeWriterEffect("CBOT: " + response);
+
+        }
+        //typewriter effect for chatbot responses
+        private async Task TypeWriterEffect(string message)
+        {
+            Paragraph paragraph = new Paragraph();
+            Run run = new Run();
+            paragraph.Inlines.Add(run);
+            rtbChat.Document.Blocks.Add(paragraph);
+
+            foreach (char letter in message)
+            {
+                run.Text += letter;
+                await Task.Delay(50); // typing speed 
+            }
         }
         // Handle Enter key press to send message
+        //"enter" key doesn't work
         private void txtInput_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.Key == Key.Enter)
+            {
+                btnSend.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            }
+        }
+        private async void LoadWelcomeMessage()
+        {
+            
+            string welcomeMessage = $"Welcome to the Cybersecurity Chatbot, {userName}! Ask me anything about online safety.";
+            speech.Speak(welcomeMessage);
+            await TypeWriterEffect(welcomeMessage);
+            
 
         }
-        
-
     }
 }

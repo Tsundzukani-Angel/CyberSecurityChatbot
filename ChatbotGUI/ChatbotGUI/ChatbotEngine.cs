@@ -85,16 +85,6 @@ namespace ChatbotGUI
                 return "Please specify a cybersecurity topic first.";
 
             }
-            //keyword recognition
-            foreach (var keyword in responses.Keys) {
-                if (userInput.Contains(keyword)) {
-                    lastTpc = keyword;
-                    return GetRandomResponse(keyword);
-
-                }
-            }
-            //default response
-            return "I'm not sure i quite understand. Can you try rephrasing or ask about a specific cybersecurity topic like password safety, phishing, scams, or privacy?";
 
             //sentiment detection 
             if (userInput.Contains("worried") || userInput.Contains("scared"))
@@ -111,6 +101,18 @@ namespace ChatbotGUI
             {
                 return "Curiosity is actually one of the best traits in cybersecurity.";
             }
+
+            //keyword recognition
+            foreach (var keyword in responses.Keys) {
+                if (userInput.Contains(keyword)) {
+                    lastTpc = keyword;
+                    return GetRandomResponse(keyword);
+
+                }
+            }
+            //default response
+            return "I'm not sure i quite understand. Can you try rephrasing or ask about a specific cybersecurity topic like password safety, phishing, scams, or privacy?";
+            
         }
 
         //returns random response

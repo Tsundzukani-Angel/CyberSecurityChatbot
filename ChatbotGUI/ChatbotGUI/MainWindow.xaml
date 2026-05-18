@@ -25,13 +25,14 @@
                      IsReadOnly="True"/>
 
         <TextBox x:Name="txtInput"
+                 KeyDown="txtInput_KeyDown"
                  Height="35"
                  Margin=" 20,0,120,20"
                  VerticalAlignment="Bottom"
                  Background="#222"
                  Foreground="White"
                  FontFamily="Consolas"
-                 FontSize="14" TextChanged="txtInput_TextChanged" KeyDown="txtInput_KeyDown"/>
+                 FontSize="14" />
         
         <Button x:Name="btnSend"
                 Content="SEND"
