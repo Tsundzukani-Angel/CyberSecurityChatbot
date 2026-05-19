@@ -18,12 +18,15 @@ namespace ChatbotGUI
         private string lastTpc = "";
 
         //remembers favorite topic
-        private string favoriteTpc = "";    
+        private string favoriteTpc = "";
 
+        //memory for last response indexes to avoid repetition
+        private Dictionary<string, int> lastResponsesIndexes;
         public ChatbotEngine()
         {
             responses = new Dictionary<string, List<string>>();
-            
+            lastResponsesIndexes = new Dictionary<string, int>();
+
             //password safety responses
             responses ["password"] = new List<string>()
             {
@@ -33,6 +36,67 @@ namespace ChatbotGUI
                 "Strong passwords protect your accounts from brute-force attacks and hackers.",
                 "A password manager can remember strong passwords for you so you don’t have to stress.",
                 "Try using passphrases instead of single words. Example: Coffee!Rain$Tiger2025"
+            };
+
+            //firewall responses
+            responses["firewall"] = new List<string>()
+            {
+               "A firewall acts like a security guard between your device and the internet.",
+               "Firewalls help block unauthorized access to your network.",
+               "Both hardware and software firewalls improve cybersecurity.",
+               "A firewall monitors incoming and outgoing network traffic.",
+               "Firewalls can prevent hackers from accessing private systems.",
+               "Turning off your firewall can make your device more vulnerable.",
+               "Most operating systems include built-in firewall protection.",
+               "Businesses use advanced firewalls to protect sensitive data.",
+               "Firewalls help stop suspicious connections before they become threats.",
+               "Combining a firewall with antivirus software improves protection."
+            };
+
+            //malware responses
+            responses["malware"] = new List<string>()
+            {
+               "Malware is harmful software designed to damage systems or steal data.",
+               "Examples of malware include spyware, ransomware, and trojans.",
+               "Avoid suspicious downloads to reduce malware infections.",
+               "Malware can secretly collect personal information from your device.",
+               "Some malware slows down computers and causes crashes.",
+               "Antivirus software helps detect and remove malware threats.",
+               "Clicking unknown email attachments can install malware.",
+               "Keeping your system updated reduces malware vulnerabilities.",
+               "Free software from untrusted websites may contain malware.",
+               "Hackers often spread malware through fake advertisements online."
+            };
+
+            //ransomware responses
+            responses["ransomware"] = new List<string>()
+            {
+               "Ransomware locks your files until money is paid.",
+               "Always back up important files to protect against ransomware.",
+               "Never open suspicious email attachments.",
+               "Ransomware attacks can affect businesses, schools, and hospitals.",
+               "Paying ransomware attackers does not guarantee your files will return.",
+               "Cybercriminals often spread ransomware through phishing emails.",
+               "Keeping backups offline helps protect your data from ransomware.",
+               "Antivirus software can help detect ransomware threats early.",
+               "Some ransomware encrypts files within minutes after infection.",
+               "Regular software updates reduce ransomware vulnerabilities."
+            };
+
+            //hacker responses
+            responses["hacker"] = new List<string>()
+            {
+               "Hackers try to exploit weaknesses in systems.",
+               "Ethical hackers help improve cybersecurity by testing security.",
+               "Strong passwords reduce the risk of hacking.",
+               "Hackers often target people through phishing emails and fake websites.",
+               "Not all hackers are criminals — ethical hackers help companies find security flaws.",
+               "Cybercriminals look for weak passwords because they are easy to break.",
+               "Hackers sometimes use social engineering instead of advanced technology.",
+               "Keeping software updated helps protect against hacking attempts.",
+               "Public Wi-Fi networks can sometimes be targeted by hackers.",
+               "Multi-factor authentication makes it harder for hackers to access accounts."
+
             };
 
             //phishing responses
@@ -112,7 +176,10 @@ namespace ChatbotGUI
             //follow up convesation flow
             if (userInput.Contains("tell me more") ||
                  userInput.Contains("explain more") ||
-                 userInput.Contains("another tip"))
+                 userInput.Contains("another tip") ||
+                 userInput.Contains("more") ||
+                 userInput.Contains("continue") ||
+                 userInput.Contains("another one"))
             {
                 if (lastTpc != "")
                 {
@@ -133,12 +200,27 @@ namespace ChatbotGUI
             {
                 return "No worries cybersecurity can feel overwhelming at first, but I’ll explain things step by step.";
             }
+            if (userInput.Contains("frustrated") ||
+                userInput.Contains("angry"))
+            {
+                return "Cybersecurity can definitely feel frustrating sometimes, but learning step by step makes it easier.";
+            }
+
+            if (userInput.Contains("nervous"))
+            {
+                return "It’s normal to feel nervous about online threats. Awareness is the first step toward staying safe.";
+            }
 
             if (userInput.Contains("curious"))
             {
                 return "Curiosity is actually one of the best traits in cybersecurity.";
             }
-
+            if (userInput.Contains("bye") ||
+                userInput.Contains("goodbye") ||
+                userInput.Contains("exit"))
+            {
+                return "Goodbye! Stay safe online.";
+            }
             //keyword recognition
             foreach (var keyword in responses.Keys)
             {
@@ -159,8 +241,20 @@ namespace ChatbotGUI
         private string GetRandomResponse(string keyword) 
         { 
             List<string> possibleResponses = responses[keyword];
-            int index = random.Next(possibleResponses.Count);
-            return possibleResponses[index];
+            int newIndex;
+
+            //ensure we don't repeat the same response twice in a row for the same topic
+            do
+            {
+                newIndex = random.Next(possibleResponses.Count);
+            } while (
+                   lastResponsesIndexes.ContainsKey(keyword) &&
+                   lastResponsesIndexes[keyword] == newIndex &&
+                   possibleResponses.Count > 1 );//if there's only one response, we have to repeat it, so we check for that
+
+            //store the index of the last response given for this topic
+            lastResponsesIndexes[keyword] = newIndex;
+            return possibleResponses[newIndex];
         }
     }
 }

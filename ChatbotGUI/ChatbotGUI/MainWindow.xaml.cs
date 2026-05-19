@@ -58,6 +58,8 @@ namespace ChatbotGUI
                 txtInput.Clear();
 
                 //get chatbot response
+                await TypeWriterEffect("...");
+                await Task.Delay(800);
                 string response = bot.GetResponse(userInput);
 
                 if (chkVoice.IsChecked == true)
