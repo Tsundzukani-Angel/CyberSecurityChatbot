@@ -4,12 +4,11 @@ using System.Linq;
 using System.Printing;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace ChatbotGUI
 {
     class ChatbotEngine
     {
-        //storage for the chatbot's knowledge(responses) base
+        //storage for the chatbot's knowledge base
         private Dictionary<string, List<string>> responses;
 
         //object for random replies
@@ -17,6 +16,9 @@ namespace ChatbotGUI
 
         //stored previous topic
         private string lastTpc = "";
+
+        //remembers favorite topic
+        private string favoriteTpc = "";    
 
         public ChatbotEngine()
         {
@@ -65,12 +67,47 @@ namespace ChatbotGUI
                 "Some apps collect WAY more data than people realize.",
                 "Think carefully before posting personal information publicly."
             };
+
+            //Virus responses
+            responses["virus"] = new List<string>()
+            {
+                "Computer viruses can damage files and slow down systems.",
+                "Avoid downloading files from unknown websites.",
+                "Antivirus software helps protect your computer.",
+                "Malware spreads through infected attachments and downloads.",
+                "Keep your operating system updated for better protection.",
+                "USB devices can also spread malware."
+            };
         }
 
         //the main chatbots response method
         public string GetResponse(string userInput)
         {
             userInput = userInput.ToLower();
+
+            //memory feature
+            if (userInput.Contains("favourite topic"))
+            {
+                foreach(var keyword in responses.Keys)
+                {
+                    if(userInput.Contains(keyword))
+                    {
+                        favoriteTpc = keyword;
+                        return $"Awesome! I'll remember that your favorite cybersecurity topic is {favoriteTpc}.";
+                    }
+                }
+                //return "I couldn't identify a specific topic in your response, but I'll remember that you have a favorite topic. You can tell me more about it later!";
+            }
+
+            if (userInput.Contains("what is my favourite topic"))
+            {
+                if (favoriteTpc != "")
+                {
+                    return $"Your favorite cybersecurity topic is {favoriteTpc}.";
+                }
+
+                return "You haven't told me your favorite topic yet.";
+            }
 
             //follow up convesation flow
             if (userInput.Contains("tell me more") ||
@@ -103,19 +140,22 @@ namespace ChatbotGUI
             }
 
             //keyword recognition
-            foreach (var keyword in responses.Keys) {
-                if (userInput.Contains(keyword)) {
+            foreach (var keyword in responses.Keys)
+            {
+                if (userInput.Contains(keyword)) 
+                {
                     lastTpc = keyword;
                     return GetRandomResponse(keyword);
 
                 }
             }
+
             //default response
             return "I'm not sure i quite understand. Can you try rephrasing or ask about a specific cybersecurity topic like password safety, phishing, scams, or privacy?";
             
         }
 
-        //returns random response
+        //Random response
         private string GetRandomResponse(string keyword) 
         { 
             List<string> possibleResponses = responses[keyword];

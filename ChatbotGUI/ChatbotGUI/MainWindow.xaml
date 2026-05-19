@@ -5,21 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChatbotGUI"
         mc:Ignorable="d"
+        Background="#0d1117"
         Title="MainWindow" Height="450" Width="800">
-    <Grid Background="DarkGray">
+    <Grid>
         <Label Content="CBOT CYBERSECURITY CHATBOT"
-               Foreground="Chartreuse"
+               Foreground="ForestGreen"
                FontFamily="Consolas"
                FontSize="24"
                FontWeight="Bold"
                HorizontalAlignment="Center"
                VerticalAlignment="Top"
                Margin="0,10,0,0"/>
-
+   
         <RichTextBox x:Name="rtbChat"
                      Margin="20,70,20,100"
-                     Background="Beige"
-                     Foreground="DarkGreen"
+                     Background="Black"
+                     Foreground="Lime"
+                     BorderBrush="Lime"
                      FontFamily="Consolas"
                      FontSize="14"
                      IsReadOnly="True"/>
@@ -29,8 +31,9 @@
                  Height="35"
                  Margin=" 20,0,120,20"
                  VerticalAlignment="Bottom"
-                 Background="#222"
+                 Background="#161b22"
                  Foreground="White"
+                 BorderBrush="Lime"
                  FontFamily="Consolas"
                  FontSize="14" />
         
@@ -46,5 +49,15 @@
                 FontWeight="Bold" 
                 Click="btnSend_Click"
                 />
+
+        <CheckBox x:Name="chkVoice"
+                  Content="Voice Enabled"
+                  Margin="20,10,0,0"
+                  Foreground="AliceBlue"
+                  FontWeight="Bold"
+                  IsChecked="True"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"/>
+
     </Grid>
 </Window>

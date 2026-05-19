@@ -19,11 +19,14 @@ namespace ChatbotGUI
     public partial class MainWindow : Window
     {
         ChatbotEngine bot = new ChatbotEngine();
+
         GreetingVoiceSpeech speech = new GreetingVoiceSpeech();
 
+        string userName = "";
         public MainWindow()
         {
             InitializeComponent();
+            rtbChat.IsReadOnly = true;
             userName = Microsoft.VisualBasic.Interaction.InputBox(
             "Enter your name:",
             "Cybersecurity Chatbot",
@@ -33,57 +36,116 @@ namespace ChatbotGUI
             LoadWelcomeMessage();
         }
 
-
-        string userName = "";
-
+        //send button click event handler
         private async void btnSend_Click(object sender, RoutedEventArgs e)
         {
-            string userInput = txtInput.Text;
+            try
+            {
+                string userInput = txtInput.Text;
 
+                if (string.IsNullOrWhiteSpace(userInput))
+                    return;
 
-            if (string.IsNullOrWhiteSpace(userInput))
-                return;
+                // user message
+                Paragraph userParagraph = new Paragraph();
 
-            rtbChat.Document.Blocks.Add(new Paragraph(new Run(userName + ": " + userInput)));
-            txtInput.Clear();
-            await TypeWriterEffect("Chatbot is typing...");
+                Run userRun = new Run(userName + ": " + userInput);
+                userRun.Foreground = Brushes.DeepSkyBlue;
 
-            string response = bot.GetResponse(userInput);
+                userParagraph.Inlines.Add(userRun);
+                rtbChat.Document.Blocks.Add(userParagraph);
+                rtbChat.ScrollToEnd();
+                txtInput.Clear();
 
+                //get chatbot response
+                string response = bot.GetResponse(userInput);
 
-            await TypeWriterEffect("CBOT: " + response);
+                if (chkVoice.IsChecked == true)
+                {
+                    speech.Speak(response);
+                }
+                //chatbot response
+                await TypeWriterEffect("CBOT: " + response);
+            }
+            catch
+            {
+                AddMessage("CBOT: Sorry, something went wrong. Please try again."); 
+            }
 
         }
+        //add message to chat
+        private void AddMessage(string message)
+        {
+            Paragraph paragraph = new Paragraph(new Run(message));
+
+            rtbChat.Document.Blocks.Add(paragraph);
+
+            rtbChat.ScrollToEnd();
+        }
+
         //typewriter effect for chatbot responses
         private async Task TypeWriterEffect(string message)
         {
             Paragraph paragraph = new Paragraph();
+
+            //chatbot styling
             Run run = new Run();
             paragraph.Inlines.Add(run);
+            run.Foreground = Brushes.LimeGreen;
+            
+            
             rtbChat.Document.Blocks.Add(paragraph);
 
             foreach (char letter in message)
             {
                 run.Text += letter;
-                await Task.Delay(50); // typing speed 
+                rtbChat.ScrollToEnd();
+                await Task.Delay(30); // typing speed 
             }
+           
         }
+
         // Handle Enter key press to send message
-        //"enter" key doesn't work
         private void txtInput_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                btnSend.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+               btnSend.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             }
         }
         private async void LoadWelcomeMessage()
         {
-            
+            //logo paragraph
+            Paragraph logoParagraph = new Paragraph();
+
+            //logo text
+            logoParagraph.TextAlignment = TextAlignment.Center;
+            logoParagraph.Margin = new Thickness(0, 10, 0, 0);
+
+                        Run logoRun = new Run(@"
+                 ██████╗ ██████╗  ██████╗ ████████╗
+                ██╔════╝ ██╔══██╗██╔═══██╗╚══██╔══╝
+                ██║      ██████╔╝██║   ██║   ██║   
+                ██║      ██╔══██╗██║   ██║   ██║   
+                ╚██████╗ ██████╔╝╚██████╔╝   ██║   
+                 ╚═════╝ ╚═════╝  ╚═════╝    ╚═╝   
+             ");
+            //styling logo
+            logoRun.FontSize = 16;
+            logoRun.Foreground = Brushes.LimeGreen;
+            logoRun.FontFamily = new FontFamily("Consolas");
+            logoRun.FontWeight = FontWeights.Bold;
+
+            logoParagraph.Inlines.Add(logoRun);
+            rtbChat.Document.Blocks.Add(logoParagraph);
+
+            await Task.Delay(500); // pause before welcome message
+
+            //welcome message with user name
             string welcomeMessage = $"Welcome to the Cybersecurity Chatbot, {userName}! Ask me anything about online safety.";
+           
             speech.Speak(welcomeMessage);
-            await TypeWriterEffect(welcomeMessage);
-            
+            await TypeWriterEffect("CBOT: " + welcomeMessage);
 
         }
     }
