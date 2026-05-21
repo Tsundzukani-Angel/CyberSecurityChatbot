@@ -148,6 +148,43 @@ namespace ChatbotGUI
         public string GetResponse(string userInput)
         {
             userInput = userInput.ToLower();
+            //menu number recognition
+            if (userInput == "1")
+            {
+                userInput = "password";
+            }
+            else if(userInput == "2") 
+            {
+                userInput = "phishing";
+            } 
+            else if(userInput == "3") 
+            {
+                userInput = "malware";
+            }
+            else if (userInput == "4")
+            {
+                userInput = "privacy";
+            }
+            else if (userInput == "5")
+            {
+                userInput = "firewall";
+            }
+            else if (userInput == "6")
+            {
+                userInput = "hacker";
+            }
+            else if (userInput == "7")
+            {
+                userInput = "scam";
+            }
+            else if (userInput == "8")
+            {
+                userInput = "ransomware";
+            }
+            else if (userInput == "9")
+            {
+                userInput = "virus";
+            }
 
             //memory feature
             if (userInput.Contains("favourite topic"))
@@ -190,7 +227,7 @@ namespace ChatbotGUI
 
             }
 
-            //sentiment detection 
+           //sentiment detection 
             if (userInput.Contains("worried") || userInput.Contains("scared"))
             {
                 return "It’s completely okay to feel worried about cybersecurity. The good thing is that learning safe habits already puts you ahead of many people.";

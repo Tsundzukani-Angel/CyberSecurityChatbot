@@ -9,7 +9,7 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Label Content="CBOT CYBERSECURITY CHATBOT"
-               Foreground="ForestGreen"
+               Foreground="LimeGreen"
                FontFamily="Consolas"
                FontSize="24"
                FontWeight="Bold"
@@ -19,36 +19,54 @@
    
         <RichTextBox x:Name="rtbChat"
                      Margin="20,70,20,100"
-                     Background="Black"
+                    Background="#0d1117"
                      Foreground="Lime"
                      BorderBrush="Lime"
+                     BorderThickness="0"
                      FontFamily="Consolas"
                      FontSize="14"
                      IsReadOnly="True"/>
 
+        <Border Padding="10"
+                Background="#161b22"
+                Height="40"
+                Margin=" 20,0,120,20"
+                CornerRadius="10"
+                BorderBrush="Azure"
+                BorderThickness="2"
+                VerticalAlignment="Bottom">
         <TextBox x:Name="txtInput"
-                 KeyDown="txtInput_KeyDown"
-                 Height="35"
-                 Margin=" 20,0,120,20"
-                 VerticalAlignment="Bottom"
+                 KeyDown="txtInput_KeyDown"               
                  Background="#161b22"
                  Foreground="White"
+                 BorderThickness="0"
                  BorderBrush="Lime"
                  FontFamily="Consolas"
                  FontSize="14" />
-        
-        <Button x:Name="btnSend"
+        </Border>
+
+        <Border  Width="80"
+                 Height="40"
+                 Margin="0,0,20,20"
+                 VerticalAlignment="Bottom"
+                 HorizontalAlignment="Right"
+                 CornerRadius="10"
+                 BorderThickness="2"
+                 Background="Aqua"
+                 BorderBrush="Azure"
+                 Padding="5"
+                 >
+
+            <Button x:Name="btnSend"
                 Content="SEND"
-                Width="80"
-                Height="35"
-                Margin="0,0,20,20"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Right"
-                Background="LightGreen"
+                Background="Aqua"
                 Foreground="Black"
                 FontWeight="Bold" 
+                BorderThickness="0"
+                BorderBrush="Azure"
                 Click="btnSend_Click"
                 />
+        </Border>
 
         <CheckBox x:Name="chkVoice"
                   Content="Voice Enabled"
