@@ -30,117 +30,406 @@ namespace ChatbotGUI
             //password safety responses
             responses ["password"] = new List<string>()
             {
-                "A weak password is basically an open door for hackers. Try using symbols, numbers, and uppercase letters.",
-                "Think of your password like your toothbrush — don’t share it and change it regularly.",
-                "Using '123456' as a password is like locking your house with paper.",
-                "Strong passwords protect your accounts from brute-force attacks and hackers.",
-                "A password manager can remember strong passwords for you so you don’t have to stress.",
-                "Try using passphrases instead of single words. Example: Coffee!Rain$Tiger2025"
+                 @"Weak passwords are one of the biggest cybersecurity risks online.
+Hackers use automated tools to guess simple passwords within seconds.
+Using uppercase letters, symbols, and numbers makes passwords much harder to crack.
+Simple passwords like:
+ a) 123456
+ b) password
+ c) qwerty
+
+can be cracked within seconds.
+
+A strong password should include:
+ a) Uppercase letters
+ b) Lowercase letters
+ c) Numbers
+ d) Symbols
+
+Example:
+Coffee!Rain$Tiger2025
+
+Strong passwords make it much harder for cybercriminals to access your accounts.",
+
+                @"Think of your password like your toothbrush — don’t share it and change it regularly.
+Reusing passwords across multiple accounts increases your risk if one account becomes compromised.
+Many users reuse the same password across multiple websites because it is easier to remember.
+However, if one website gets hacked, attackers may try the same password on your:
+ a) Email
+ b) Banking apps
+ c) Social media
+ d) Gaming accounts
+
+Using different passwords for different accounts improves cybersecurity significantly.",
+
+                @"Password managers help generate and securely store strong passwords.
+This reduces the temptation to reuse simple passwords across websites.
+Instead of memorizing dozens of passwords, a password manager securely stores them for you.
+This helps users avoid weak or repeated passwords.
+
+Password managers can also:
+ a) Suggest stronger passwords
+ b) Auto-fill login details
+ c) Warn users about compromised passwords
+
+This improves both convenience and security.",
+
+                @"Multi-factor authentication adds another layer of security.
+Even if hackers steal your password, they may still need:
+ a) A fingerprint
+ b) A phone verification code
+ c) Facial recognition
+
+Many banks and social media platforms now recommend enabling multi-factor authentication for better security.
+This makes unauthorized access far more difficult."
             };
 
             //firewall responses
             responses["firewall"] = new List<string>()
             {
-               "A firewall acts like a security guard between your device and the internet.",
-               "Firewalls help block unauthorized access to your network.",
-               "Both hardware and software firewalls improve cybersecurity.",
-               "A firewall monitors incoming and outgoing network traffic.",
-               "Firewalls can prevent hackers from accessing private systems.",
-               "Turning off your firewall can make your device more vulnerable.",
-               "Most operating systems include built-in firewall protection.",
-               "Businesses use advanced firewalls to protect sensitive data.",
-               "Firewalls help stop suspicious connections before they become threats.",
-               "Combining a firewall with antivirus software improves protection."
+                @"A firewall acts like a security guard between your device and the internet.
+
+It monitors incoming and outgoing network traffic and blocks suspicious activity before it reaches your system.
+
+Firewalls help:
+ a) Prevent unauthorized access
+ b) Block harmful traffic
+ c) Protect sensitive information
+
+Without a firewall, hackers may have an easier time accessing vulnerable devices.",
+
+                @"There are different types of firewalls used in cybersecurity.
+
+Examples include:
+ a) Software firewalls
+ b) Hardware firewalls
+ c) Cloud firewalls
+
+Software firewalls protect individual computers while hardware firewalls protect entire networks.
+
+Businesses often combine multiple firewalls for stronger protection.",
+
+               @"Turning off your firewall can expose your device to online threats.
+
+Hackers constantly scan networks searching for weak or unprotected systems.
+
+A firewall helps reduce risks by:
+ a) Blocking unknown connections
+ b) Monitoring traffic
+ c) Filtering suspicious requests
+
+Keeping your firewall enabled improves your overall cybersecurity.",
+               @"Modern firewalls can do more than just block hackers.
+
+Advanced firewalls may:
+ a) Filter websites
+ b) Detect malware activity
+ c) Monitor applications
+ d) Prevent suspicious downloads
+
+This creates multiple layers of protection against cyberattacks."
             };
 
             //malware responses
             responses["malware"] = new List<string>()
             {
-               "Malware is harmful software designed to damage systems or steal data.",
-               "Examples of malware include spyware, ransomware, and trojans.",
-               "Avoid suspicious downloads to reduce malware infections.",
-               "Malware can secretly collect personal information from your device.",
-               "Some malware slows down computers and causes crashes.",
-               "Antivirus software helps detect and remove malware threats.",
-               "Clicking unknown email attachments can install malware.",
-               "Keeping your system updated reduces malware vulnerabilities.",
-               "Free software from untrusted websites may contain malware.",
-               "Hackers often spread malware through fake advertisements online."
-            };
+               @"Malware is harmful software designed to damage systems or steal information.
+
+Common types of malware include:
+ a) Viruses
+ b) Trojans
+ c) Spyware
+ d) Ransomware
+ e) Worms
+
+Cybercriminals use malware to gain unauthorized access to devices and sensitive data.",
+
+               @"Malware infections often happen through unsafe downloads and suspicious websites.
+
+Attackers may disguise malware as:
+ a) Free games
+ b) Cracked software
+ c) Fake applications
+ d) Email attachments
+
+Once installed, malware may operate silently in the background without the user noticing.",
+
+               @"Some malware is designed to spy on users and collect personal information.
+
+This information may include:
+ a) Passwords
+ b) Banking details
+ c) Emails
+ d) Browsing activity
+
+Cybercriminals may use stolen information for fraud or identity theft.",
+
+                @"Signs of malware infection may include:
+ a) Slow computer performance
+ b) Random popups
+ c) Frequent crashes
+ d) Unknown applications
+ e) High internet usage
+
+Running antivirus scans regularly can help detect and remove malware threats."
+        };
 
             //ransomware responses
             responses["ransomware"] = new List<string>()
             {
-               "Ransomware locks your files until money is paid.",
-               "Always back up important files to protect against ransomware.",
-               "Never open suspicious email attachments.",
-               "Ransomware attacks can affect businesses, schools, and hospitals.",
-               "Paying ransomware attackers does not guarantee your files will return.",
-               "Cybercriminals often spread ransomware through phishing emails.",
-               "Keeping backups offline helps protect your data from ransomware.",
-               "Antivirus software can help detect ransomware threats early.",
-               "Some ransomware encrypts files within minutes after infection.",
-               "Regular software updates reduce ransomware vulnerabilities."
+                @"Ransomware is a type of malware that locks or encrypts files until money is paid.
+
+Victims may lose access to:
+ a) Documents
+ b) Photos
+ c) Business files
+ d) Entire systems
+
+Cybercriminals demand payment in exchange for restoring access.",
+
+                @"Phishing emails are one of the most common ways ransomware spreads.
+
+Attackers trick users into:
+ a) Opening infected attachments
+ b) Downloading fake files
+ c) Clicking malicious links
+
+One careless click can infect an entire network.",
+
+                @"Backing up important files is one of the best defenses against ransomware.
+
+Offline backups are especially useful because ransomware may also target connected drives.
+
+Regular backups help users recover data without paying attackers.",
+
+               @"Paying ransomware attackers does not guarantee file recovery.
+
+Some victims never regain access to their files even after payment.
+
+Cybersecurity experts usually recommend:
+ a) Disconnecting infected systems
+ b) Reporting attacks
+ c) Restoring backups
+ d) Improving security measures"
             };
 
             //hacker responses
             responses["hacker"] = new List<string>()
             {
-               "Hackers try to exploit weaknesses in systems.",
-               "Ethical hackers help improve cybersecurity by testing security.",
-               "Strong passwords reduce the risk of hacking.",
-               "Hackers often target people through phishing emails and fake websites.",
-               "Not all hackers are criminals — ethical hackers help companies find security flaws.",
-               "Cybercriminals look for weak passwords because they are easy to break.",
-               "Hackers sometimes use social engineering instead of advanced technology.",
-               "Keeping software updated helps protect against hacking attempts.",
-               "Public Wi-Fi networks can sometimes be targeted by hackers.",
-               "Multi-factor authentication makes it harder for hackers to access accounts."
+               @"Hackers search for weaknesses in systems, networks, and human behavior.
+
+Common weaknesses include:
+ a) Weak passwords
+ b) Outdated software
+ c) Unsafe websites
+ d) Human mistakes
+
+Cybercriminals exploit these weaknesses to gain unauthorized access.",
+
+               @"Not all hackers are criminals.
+
+Different types of hackers include:
+ a) White-hat hackers
+ b) Black-hat hackers
+ c) Grey-hat hackers
+
+Ethical hackers help organizations improve security by testing systems legally and identifying vulnerabilities.",
+
+                @"Social engineering is a technique hackers use to manipulate people instead of attacking computers directly.
+
+Hackers may pretend to be:
+ a) Bank employees
+ b) Technical support agents
+ c) Trusted companies
+
+Their goal is to trick users into revealing sensitive information.",
+
+               @"Public Wi-Fi networks can expose users to hacking risks.
+
+Hackers on unsecured networks may intercept:
+ a) Passwords
+ b) Emails
+ c) Banking information
+
+Using secure networks and VPNs improves online safety.",
+
+   @"Keeping software updated helps protect systems against hackers.
+
+Software updates often include:
+ a) Security patches
+ b) Bug fixes
+ c) Improved protection
+
+Ignoring updates leaves devices vulnerable to known attacks."
 
             };
 
             //phishing responses
             responses ["phishing"] = new List<string>()
             {
-                "Not every email that says 'URGENT' is actually urgent.",
-                "Phishing attacks usually try to scare or pressure you into acting quickly.",
-                "If an email asks for your banking details, pause and verify first.",
-                "Hackers LOVE fake links. Always hover over links before clicking.",
-                "A message saying 'you won money' is probably the internet trying to humble you.",
-                "Legitimate companies rarely ask for passwords through email."
+                @"Phishing attacks are designed to trick users into revealing sensitive information.
+
+Attackers often pretend to represent:
+ a) Banks
+ b) Online stores
+ c) Social media platforms
+ d) Government organizations
+
+Their goal is to steal passwords, banking details, or personal information.",
+
+    @"Phishing messages usually create panic or urgency.
+
+Examples include:
+ a) 'Your account will be locked!'
+ b) 'Verify your banking details now!'
+ c) 'You have won a prize!'
+
+Cybercriminals pressure victims into acting quickly without thinking carefully.",
+
+    @"Fake websites are commonly used during phishing attacks.
+
+These websites may look identical to legitimate platforms but are designed to steal:
+ a) Login credentials
+ b) Credit card information
+ c) Personal data
+
+Always check website URLs carefully before entering information.",
+
+    @"Phishing attacks can happen through:
+ a) Emails
+ b) SMS messages
+ c) Phone calls
+ d) Social media
+
+Cybercriminals use multiple communication methods to target victims and spread scams."
             };
 
             //scam responses
             responses["scam"] = new List<string>()
             {
-               "Scammers are professional manipulators. Stay calm before reacting.",
-               "If something online feels suspicious, trust your instincts.",
-               "Nobody randomly gives away free iPhones every day.",
-               "Online scams often create fake urgency to pressure victims.",
-               "Always verify websites before entering sensitive information.",
-               "A secure website should usually start with HTTPS."
+               @"Online scams are designed to trick users into giving away money or sensitive information.
+
+Scammers often create fake situations involving:
+ a) Emergencies
+ b) Giveaways
+ c) Investments
+ d) Technical support
+
+Their goal is to manipulate victims emotionally.",
+
+   @"Many scams create a sense of urgency to pressure victims.
+
+Messages may claim:
+ a) Your account is compromised
+ b) Payment is required immediately
+ c) A prize is waiting
+
+Scammers want users to react quickly instead of thinking carefully.",
+
+   @"Fake shopping websites are common online scams.
+
+These websites may:
+ a) Offer unrealistic discounts
+ b) Copy legitimate brands
+ c) Collect payment information
+
+Always verify websites before making purchases online.",
+
+   @"Scammers sometimes impersonate trusted organizations.
+
+Examples include:
+ a) Banks
+ b) Delivery companies
+ c) Government agencies
+ d) Technical support teams
+
+Verifying suspicious communication independently helps reduce scam risks."
             };
 
             //privacy responses
             responses["privacy"] = new List<string>()
             {
-                "Your personal data is valuable. Protect it like money.",
-                "Oversharing online can expose you to cybercriminals.",
-                "Location sharing on social media can become a privacy risk.",
-                "Review your privacy settings regularly on apps and websites.",
-                "Some apps collect WAY more data than people realize.",
-                "Think carefully before posting personal information publicly."
+                @"Personal information is valuable online and should be protected carefully.
+
+Cybercriminals may use stolen information for:
+ a) Identity theft
+ b) Fraud
+ c) Scams
+ d) Account hijacking
+
+Protecting your privacy reduces these cybersecurity risks.",
+
+    @"Oversharing on social media can expose sensitive information.
+
+Details such as:
+ a) Your location
+ b) School
+ c) Workplace
+ d) Daily routines
+
+may help cybercriminals target users more effectively.",
+
+    @"Privacy settings help control who can view your personal information online.
+
+Reviewing settings regularly improves security on:
+ a) Social media
+ b) Mobile apps
+ c) Websites
+
+Limiting public access helps protect your digital identity.",
+
+    @"Some applications collect more data than users realize.
+
+Examples of collected data may include:
+ a) Location history
+ b) Contacts
+ c) Browsing activity
+ d) Device information
+
+Checking app permissions helps users protect their privacy."
             };
 
             //Virus responses
             responses["virus"] = new List<string>()
             {
-                "Computer viruses can damage files and slow down systems.",
-                "Avoid downloading files from unknown websites.",
-                "Antivirus software helps protect your computer.",
-                "Malware spreads through infected attachments and downloads.",
-                "Keep your operating system updated for better protection.",
-                "USB devices can also spread malware."
+                @"Computer viruses are harmful programs designed to spread between devices and damage systems.
+
+Viruses may:
+ a) Corrupt files
+ b) Slow down computers
+ c) Delete information
+ d) Disrupt system performance
+
+Some viruses are also designed to steal personal information.",
+
+    @"Viruses often spread through unsafe downloads and infected attachments.
+
+Common infection sources include:
+ a) Suspicious email attachments
+ b) Pirated software
+ c) Fake applications
+ d) Infected USB devices
+
+Avoiding unknown files helps reduce infection risks.",
+
+    @"Antivirus software helps detect and remove computer viruses.
+
+Antivirus programs can:
+ a) Scan files
+ b) Block threats
+ c) Quarantine infected programs
+ d) Protect systems in real time
+
+Keeping antivirus software updated improves protection.",
+
+    @"Signs of a virus infection may include:
+ a) Slow performance
+ b) Frequent crashes
+ c) Strange popups
+ d) Missing files
+ e) Unusual activity
+
+Running security scans regularly helps identify threats early."
             };
         }
 

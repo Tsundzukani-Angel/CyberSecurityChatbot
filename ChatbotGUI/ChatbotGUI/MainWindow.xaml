@@ -16,17 +16,22 @@
                HorizontalAlignment="Center"
                VerticalAlignment="Top"
                Margin="0,10,0,0"/>
-   
-        <RichTextBox x:Name="rtbChat"
-                     Margin="20,70,20,100"
-                    Background="#0d1117"
+        
+        <Border  Margin="20,70,20,100"
+                 Padding="10"
+                 Background="White"
+                 CornerRadius="10">
+            
+        <RichTextBox x:Name="rtbChat"                    
+                     Background="WhiteSmoke"
                      Foreground="Lime"
                      BorderBrush="Lime"
                      BorderThickness="0"
                      FontFamily="Consolas"
                      FontSize="14"
-                     IsReadOnly="True"/>
-
+                     IsReadOnly="True" />
+        </Border>
+        
         <Border Padding="10"
                 Background="#161b22"
                 Height="40"
@@ -52,14 +57,14 @@
                  HorizontalAlignment="Right"
                  CornerRadius="10"
                  BorderThickness="2"
-                 Background="Aqua"
+                 Background="WhiteSmoke"
                  BorderBrush="Azure"
                  Padding="5"
                  >
 
             <Button x:Name="btnSend"
                 Content="SEND"
-                Background="Aqua"
+                Background="Linen"
                 Foreground="Black"
                 FontWeight="Bold" 
                 BorderThickness="0"

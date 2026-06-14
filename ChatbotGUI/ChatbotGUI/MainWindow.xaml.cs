@@ -18,6 +18,7 @@ namespace ChatbotGUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        DatabaseManager db = new DatabaseManager();
         ChatbotEngine bot = new ChatbotEngine();
 
         GreetingVoiceSpeech speech = new GreetingVoiceSpeech();
@@ -26,7 +27,23 @@ namespace ChatbotGUI
         public MainWindow()
         {
             InitializeComponent();
+            
+            if(db.TestConnecton())
+            {
+                MessageBox.Show("Database connection successful!", "Connection Status", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Database connection failed. Please check your settings.", "Connection Status", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            db.AddTask(
+             "Enable 2FA",
+             "Enable two-factor authentication on Gmail",
+             DateTime.Now.AddDays(7)
+             );
+
             rtbChat.IsReadOnly = true;
+            //used ChatGPT
             userName = Microsoft.VisualBasic.Interaction.InputBox(
             "Enter your name:",
             "Cybersecurity Chatbot",
@@ -42,7 +59,6 @@ namespace ChatbotGUI
             try
             {
                 string userInput = txtInput.Text;
-
                 
                 if (string.IsNullOrWhiteSpace(userInput))
                     return;
@@ -58,7 +74,7 @@ namespace ChatbotGUI
                 //user bubble
                 Border userBubble = new Border();
               
-                userBubble.Background = Brushes.Gray;
+                userBubble.Background = Brushes.DeepSkyBlue;
                 userBubble.CornerRadius = new CornerRadius(15);
 
                 userBubble.Padding = new Thickness(10);
@@ -75,15 +91,25 @@ namespace ChatbotGUI
                 rtbChat.Document.Blocks.Add(userContainer);
                 rtbChat.ScrollToEnd();
 
-                txtInput.Clear();
+                txtInput.Clear();//clear input after sending message
                 txtInput.Focus();//focus on input after sending message
 
+                if(userInput.Trim().ToLower().Contains("exit") || userInput.Trim().ToLower().Contains("bye") ||
+                    userInput.Trim().ToLower().Contains("goodbye"))
+                {
+                    string exitMessage = $"Goodbye {userName}! Stay safe online!";
+                    speech.Speak(exitMessage);
+                    await TypeWriterEffect($"CBOT: {exitMessage}");
+                    await Task.Delay(2000);//close application after goodbye message
+                    Application.Current.Shutdown();
+                    return;
+                }
                 ShowTyingIndicator();
                 //get chatbot response
                 await Task.Delay(1000);
                 HideTypingIndicator();
-                string response = bot.GetResponse(userInput);
 
+                string response = bot.GetResponse(userInput);
 
                 if (chkVoice.IsChecked == true)
                 {
@@ -115,7 +141,7 @@ namespace ChatbotGUI
             //chatbot styling
             TextBlock botText = new TextBlock();
 
-            botText.Foreground = Brushes.DarkOrange;
+            botText.Foreground = Brushes.WhiteSmoke;
             botText.FontWeight = FontWeights.Bold;
             botText.TextWrapping = TextWrapping.Wrap;
             botText.MaxWidth = 450;
@@ -123,7 +149,7 @@ namespace ChatbotGUI
             //bot bubble
             Border botBubble = new Border();
 
-            botBubble.Background = new SolidColorBrush(Color.FromRgb(30, 30, 30));
+            botBubble.Background = new SolidColorBrush(Color.FromRgb(0, 100, 0));
             botBubble.CornerRadius = new CornerRadius(15);
 
             botBubble.Padding = new Thickness(10);
@@ -144,7 +170,7 @@ namespace ChatbotGUI
             {
                 botText.Text += letter;
                 rtbChat.ScrollToEnd();
-                await Task.Delay(30); // typing speed 
+                await Task.Delay(55); // typing speed 
             }
 
         }
@@ -164,7 +190,8 @@ namespace ChatbotGUI
 
             //logo text
             logoParagraph.TextAlignment = TextAlignment.Center;
-            logoParagraph.Margin = new Thickness(0, 10, 0, 0);
+            
+            logoParagraph.Margin = new Thickness(10, 10, 0, 0);
 
             Run logoRun = new Run(@"
                  ██████╗ ██████╗  ██████╗ ████████╗
@@ -176,10 +203,10 @@ namespace ChatbotGUI
              ");
             //styling logo
             logoRun.FontSize = 16;
-            logoRun.Foreground = Brushes.Aqua;
+            logoRun.Foreground = Brushes.Navy;
             logoRun.FontFamily = new FontFamily("Consolas");
             logoRun.FontWeight = FontWeights.Bold;
-
+            
             logoParagraph.Inlines.Add(logoRun);
             rtbChat.Document.Blocks.Add(logoParagraph);
 
@@ -212,10 +239,10 @@ namespace ChatbotGUI
         {
             typingParagraph = new Paragraph(new Run("..."));
             typingParagraph.Foreground = Brushes.Gray;
-            // typingParagraph.Inlines.Add(typingParagraph);
             rtbChat.Document.Blocks.Add(typingParagraph);
             rtbChat.ScrollToEnd();
         }
+        // Remove the typing indicator from the chat
         private void HideTypingIndicator()
         {
             if (typingParagraph != null)
