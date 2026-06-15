@@ -11,7 +11,7 @@ namespace ChatbotGUI
     internal class TaskItem
     {
         //the get and set methods are used to access the properties of the class
-        public int TaskId { get; set; } 
+        public int TaskID { get; set; } 
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime? ReminderDate { get; set; }

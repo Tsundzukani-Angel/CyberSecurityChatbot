@@ -44,5 +44,33 @@ namespace ChatbotGUI
                 cmd.ExecuteNonQuery(); // Execute the query to insert the task into the database
             }
         }
+        public List<TaskItem> GetAllTasks()
+        {
+            List<TaskItem> tasks = new List<TaskItem>();
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+                string query = "SELECT * FROM Tasks";
+
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    TaskItem task = new TaskItem();
+
+                    task.TaskID = Convert.ToInt32(reader["TaskID"]);
+                    task.Title = reader["Title"].ToString();
+                    task.Description = reader["Description"].ToString();
+
+                    if (reader["ReminderDate"] != DBNull.Value)
+                    {
+                        task.ReminderDate = Convert.ToDateTime(reader["ReminderDate"]);
+                    }
+                    task.Status = reader["Status"].ToString();
+                    tasks.Add(task);
+                }
+            }
+            return tasks;
+        }
     }
 }

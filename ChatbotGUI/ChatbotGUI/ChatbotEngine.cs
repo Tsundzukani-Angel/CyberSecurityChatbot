@@ -547,6 +547,13 @@ Running security scans regularly helps identify threats early."
             {
                 return "Goodbye! Stay safe online.";
             }
+            //task management recognition
+            if (userInput.Contains("view tasks") ||
+               userInput.Contains("show tasks") ||
+               userInput.Contains("my tasks"))
+            {
+                return "SHOW_TASKS";
+            }
             //keyword recognition
             foreach (var keyword in responses.Keys)
             {

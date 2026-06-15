@@ -36,11 +36,11 @@ namespace ChatbotGUI
             {
                 MessageBox.Show("Database connection failed. Please check your settings.", "Connection Status", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            db.AddTask(
-             "Enable 2FA",
-             "Enable two-factor authentication on Gmail",
-             DateTime.Now.AddDays(7)
-             );
+            //db.AddTask(
+            // "Enable 2FA",
+            // "Enable two-factor authentication on Gmail",
+            // DateTime.Now.AddDays(7)
+            // );
 
             rtbChat.IsReadOnly = true;
             //used ChatGPT
@@ -110,6 +110,27 @@ namespace ChatbotGUI
                 HideTypingIndicator();
 
                 string response = bot.GetResponse(userInput);
+
+                if(response == "SHOW_TASKS")
+                {
+                    List<TaskItem> tasks = db.GetAllTasks();
+                   
+                    if (tasks.Count == 0)
+                    {
+                        await TypeWriterEffect("CBOT: You have no tasks at the moment.");
+                    }
+
+                   string taskList = "Your Tasks:\n\n";
+                    foreach (TaskItem task in tasks)
+                    {
+                        taskList += $"ID: {task.TaskID}\n" +
+                            $"Title: {task.Title}\n" +
+                            $"Description: {task.Description}\n" +
+                            $"Status: {task.Status}\n\n";
+                    }
+                    await TypeWriterEffect("CBOT: " + taskList);
+                    return;
+                }
 
                 if (chkVoice.IsChecked == true)
                 {
