@@ -126,10 +126,46 @@ namespace ChatbotGUI
                         taskList += $"ID: {task.TaskID}\n" +
                             $"Title: {task.Title}\n" +
                             $"Description: {task.Description}\n" +
-                            $"Status: {task.Status}\n\n";
+                            $"Status: {task.Status}\n";
                     }
                     await TypeWriterEffect("CBOT: " + taskList);
                     return;
+                }
+
+                if(userInput.ToLower().StartsWith("complete task"))
+                {
+                    try
+                    {
+                        string[] parts = userInput.Split(' ');
+                        int taskId = int.Parse(parts[2]);
+                        db.CompleteTask(taskId);
+
+                        await TypeWriterEffect($"CBOT: Task {taskId} marked as completed.");
+
+                        return;
+                    }
+                    catch
+                    {
+                        await TypeWriterEffect("CBOT: Please use the format: complete task 1"); 
+                        return;
+                    }
+                }
+
+                if (userInput.ToLower().StartsWith("delete task"))
+                {
+                    try
+                    {
+                        string[] parts = userInput.Split(' ');
+                        int taskId = int.Parse(parts[2]);
+                        db.DeleteTask(taskId);
+                        await TypeWriterEffect($"CBOT: Task {taskId} has been deleted.");
+                        return;
+                    }
+                    catch
+                    {
+                        await TypeWriterEffect("CBOT: Please use the format: delete task 1");
+                        return;  
+                    }
                 }
 
                 if (chkVoice.IsChecked == true)

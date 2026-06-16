@@ -26,6 +26,7 @@ namespace ChatbotGUI
                 return false;
             }
         }
+
         public void AddTask(string title, string description, DateTime? reminderDate)
         {
             using (MySqlConnection conn = new MySqlConnection(connectionString))
@@ -44,6 +45,7 @@ namespace ChatbotGUI
                 cmd.ExecuteNonQuery(); // Execute the query to insert the task into the database
             }
         }
+        //this method retrieves all tasks from the database and returns them as a list of TaskItem objects
         public List<TaskItem> GetAllTasks()
         {
             List<TaskItem> tasks = new List<TaskItem>();
@@ -71,6 +73,32 @@ namespace ChatbotGUI
                 }
             }
             return tasks;
+        }
+        //this method updates the status of a task to "Completed" based on its ID
+        public void CompleteTask(int taskId)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+                string query = "UPDATE Tasks SET Status = 'Completed' WHERE TaskID = @taskId";
+
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@taskId", taskId);
+                cmd.ExecuteNonQuery();
+            }
+        }
+        //this method deletes a task from the database based on its ID
+        public void DeleteTask(int taskId)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+                string query = "DELETE FROM Tasks WHERE TaskID = @id";
+
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@id", taskId);
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 }
