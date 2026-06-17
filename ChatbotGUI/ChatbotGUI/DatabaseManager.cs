@@ -29,18 +29,19 @@ namespace ChatbotGUI
 
         public void AddTask(string title, string description, DateTime? reminderDate)
         {
+            string query = @"INSERT INTO Tasks (Title, Description, ReminderDate) 
+                                 VALUES (@title, @description, @reminderDate)";
+
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 conn.Open(); // Open the connection to the database
-
-                string query = @"INSERT INTO Tasks (Title, Description, ReminderDate) 
-                                 VALUES (@title, @description, @reminderDate)";
 
                 MySqlCommand cmd = new MySqlCommand(query, conn);
 
                 cmd.Parameters.AddWithValue("@title", title);// Add the title parameter to the query
                 cmd.Parameters.AddWithValue("@description", description);
-                cmd.Parameters.AddWithValue("@reminderDate", reminderDate);
+                // Add the description and reminder date parameters to the query, handling null values for reminderDate
+                cmd.Parameters.AddWithValue("@reminderDate", reminderDate.HasValue? reminderDate: DBNull.Value);
 
                 cmd.ExecuteNonQuery(); // Execute the query to insert the task into the database
             }
@@ -100,5 +101,6 @@ namespace ChatbotGUI
                 cmd.ExecuteNonQuery();
             }
         }
+       
     }
 }

@@ -16,8 +16,64 @@
                HorizontalAlignment="Center"
                VerticalAlignment="Top"
                Margin="0,10,0,0"/>
+
+        <Menu Margin="20, 45, 20, 0"
+              Height="30"
+              VerticalAlignment="Top"
+              Background="Transparent"
+              Foreground="WhiteSmoke"
+              FontWeight="Bold"
+              FontSize="12.9">
+
+            <MenuItem Header="Task Assistant">
+
+                <MenuItem Header="Add Task"
+                          Foreground="Black"
+                          Click="AddTask_Click"/>
+
+                <MenuItem Header="Show tasks"
+                          Foreground="Black"
+                          Click="ShowTasks_Click"/>
+
+                <MenuItem Header="Complete Task"
+                          Foreground="Black"
+                          Click="CompleteTask_Click"/>
+
+                <MenuItem Header="Delete Task"
+                          Foreground="Black"
+                          Click="DeleteTask_Click"/>
+  
+            </MenuItem>
+
+            <MenuItem Header="Quiz">
+                
+                <MenuItem Header="Start Quiz"
+                          Foreground="Black"
+                          Click="StartQuiz_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="Activity Log">
+               
+                <MenuItem Header="Show Activity Log"
+                          Foreground="Black"
+                          Click="ShowLog_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="Other">
+                
+                <MenuItem Header="Help"
+                          Foreground="Black"
+                          Click="Help_Click"/>
+                
+                <MenuItem Header="Exit"
+                          Foreground="Black"
+                          Click="Exit_Click"/>
+            </MenuItem>
+            
+        </Menu>
         
-        <Border  Margin="20,70,20,100"
+        
+        <Border  Margin="20,90,20,100"
                  Padding="10"
                  Background="White"
                  CornerRadius="10">
