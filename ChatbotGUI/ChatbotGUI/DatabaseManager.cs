@@ -27,6 +27,7 @@ namespace ChatbotGUI
             }
         }
 
+        //this method adds a new task to the database with the provided title, description, and optional reminder date
         public void AddTask(string title, string description, DateTime? reminderDate)
         {
             string query = @"INSERT INTO Tasks (Title, Description, ReminderDate) 
@@ -41,7 +42,7 @@ namespace ChatbotGUI
                 cmd.Parameters.AddWithValue("@title", title);// Add the title parameter to the query
                 cmd.Parameters.AddWithValue("@description", description);
                 // Add the description and reminder date parameters to the query, handling null values for reminderDate
-                cmd.Parameters.AddWithValue("@reminderDate", reminderDate.HasValue? reminderDate: DBNull.Value);
+                cmd.Parameters.AddWithValue("@reminderDate", reminderDate.HasValue ? reminderDate : DBNull.Value);
 
                 cmd.ExecuteNonQuery(); // Execute the query to insert the task into the database
             }
@@ -101,6 +102,44 @@ namespace ChatbotGUI
                 cmd.ExecuteNonQuery();
             }
         }
-       
+
+        //this method adds an activity log to the database with the provided action description
+        public void AddActivityLog(string action)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string query = "INSERT INTO ActivityLog(ActionDescription)" + "VALUES (@action)";
+
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@action", action);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        //this method retrieves the last 10 activity logs from the database and returns them as a list of strings
+        public List<string> GetActivityLogs() 
+        {
+           List<string> logs = new List<string>();
+
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string query = "SELECT * FROM ActivityLog " + "ORDER BY ActionDate DESC LIMIT 10";
+
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                MySqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    logs.Add($"{reader["ActionDate"]} - {reader["ActionDescription"]}");
+                }
+            }
+            return logs;
+        }
+
     }
 }

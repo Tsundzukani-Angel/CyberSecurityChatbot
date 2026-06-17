@@ -67,6 +67,8 @@ namespace ChatbotGUI
                     input.Contains("set a reminder") ||
                     input.Contains("create reminder"))
                 {
+                    LogActivity("NLP recognized user intent to add a task.");
+
                     addingTask = true;
                     await BotReply("Please enter the task title.");
                     txtInput.Clear();
@@ -116,6 +118,11 @@ namespace ChatbotGUI
 
                     LogActivity($"Added task: {taskTitle}");
 
+                    //log reminder if date was set
+                    if (reminderDate.HasValue)
+                    {
+                        LogActivity($"Set reminder for task: {taskTitle} on {reminderDate.Value:yyyy-MM-dd}");
+                    }
                     waitingForReminder = false;
                     txtInput.Clear();
                     return;
@@ -174,6 +181,8 @@ namespace ChatbotGUI
                     input.Contains("recent activity") ||
                     input.Contains("what have i done"))
                 {
+                    LogActivity("NLP recognized user intent to view activity log.");
+
                     if (activityLog.Count == 0)//check if log is empty
                     {
                         await BotReply("Your activity log is empty.");
@@ -181,7 +190,9 @@ namespace ChatbotGUI
                     }
                     //display last 10 entries in activity log
                     string logOutput = "Activity Log:\n\n";
-                    foreach (string entry in activityLog.TakeLast(10))
+
+                    List<string> logs = db.GetActivityLogs();
+                    foreach (string entry in logs)
                     {
                         logOutput += entry + "\n";
                     }
@@ -195,6 +206,8 @@ namespace ChatbotGUI
                     input.Contains("quiz") ||
                     input.Contains("begin quiz"))
                 {
+                    LogActivity("NLP recognized user intent to start a cybersecurity quiz.");
+
                     quizManager.QuizMode = true;
                     quizManager.CurrentQuestion = 0;
                     quizManager.Score = 0;
@@ -256,6 +269,7 @@ namespace ChatbotGUI
                     input.Contains("my tasks") ||
                     input.Contains("display tasks"))
                 {
+                    LogActivity("NLP recognized user intent to view all tasks.");
                     List<TaskItem> tasks = db.GetAllTasks();
 
                     if (tasks.Count == 0)
@@ -269,6 +283,7 @@ namespace ChatbotGUI
                         taskList += $"ID: {task.TaskID}\n" +
                             $"Title: {task.Title}\n" +
                             $"Description: {task.Description}\n" +
+                            $"Reminder: {(task.ReminderDate.HasValue ? task.ReminderDate.Value.ToString("yyyy-MM-dd") : "None")}\n" +
                             $"Status: {task.Status}\n";
                     }
                     await TypeWriterEffect(taskList);
@@ -280,6 +295,7 @@ namespace ChatbotGUI
                     input.StartsWith("finish task") ||
                     input.StartsWith("mark task as complete"))
                 {
+                    LogActivity("NLP recognized user intent to complete a task.");
                     try
                     {
                         string[] parts = userInput.Split(' ');
@@ -303,6 +319,7 @@ namespace ChatbotGUI
                     input.StartsWith("remove task") ||
                     input.StartsWith("erase task"))
                 {
+                    LogActivity("NLP recognized user intent to delete a task.");
                     try
                     {
                         string[] parts = userInput.Split(' ');
@@ -433,7 +450,7 @@ namespace ChatbotGUI
             DisplayInstantMessage(@"
 CYBERSECURITY TOPICS
 
- 1. Password Security
+  1. Password Security
   2. Phishing Awareness
   3. Malware
   4. Privacy
@@ -444,10 +461,10 @@ CYBERSECURITY TOPICS
   9. Virus
 
 Use the menu above for:
- • Tasks
- • Quiz
- • Activity Log
- • Exit
+  • Tasks
+  • Quiz
+  • Activity Log
+  • Exit
 
 Type Help anytime to see this menu again.");
             return;
@@ -477,7 +494,10 @@ Type Help anytime to see this menu again.");
         {
             // Create a log entry with the current timestamp and action description
             string logEntry = $"{DateTime.Now: yyyy-MM-dd HH:mm:ss}: {action}";
+
             activityLog.Add(logEntry);
+
+            db.AddActivityLog(action);
         }
 
         private async Task CheckQuizAnswer(string userAnswer)
@@ -544,14 +564,19 @@ Type Help anytime to see this menu again.");
         private async void AddTask_Click(object sender, RoutedEventArgs e)
         {
             AddUserMessage("Add Task");
+            LogActivity("Opened Add Task menu");
+
             ShowTyingIndicator();
-            addingTask = true;
+            
             await BotReply("Please enter the task title.");
+            addingTask = true;
         }
 
         private async void ShowTasks_Click(object sender, RoutedEventArgs e)
         {
             AddUserMessage("Show Tasks");
+            LogActivity("Viewed all tasks");
+
             ShowTyingIndicator();
             List<TaskItem> tasks = db.GetAllTasks();
             if (tasks.Count == 0) 
@@ -567,7 +592,7 @@ Type Help anytime to see this menu again.");
                 taskList += $"ID: {task.TaskID}\n" +
                     $"Title: {task.Title}\n" +
                     $"Description: {task.Description}\n" +
-                    $"Status: {task.Status}\n\n";
+                    $"Status: {task.Status}\n";
             }
 
             await BotReply(taskList);
@@ -576,12 +601,12 @@ Type Help anytime to see this menu again.");
         private async void StartQuiz_Click(object sender, RoutedEventArgs e)
         {
             AddUserMessage("Start Quiz");
+
+            LogActivity("Started a cybersecurity quiz.");
             ShowTyingIndicator();
             quizManager.QuizMode = true;
             quizManager.CurrentQuestion = 0;
             quizManager.Score = 0;
-
-            LogActivity("Started a cybersecurity quiz.");
 
             await BotReply("Cyber Quiz Started!\n\n" + quizManager.GetCurrentQuestion().Question);
         }
@@ -590,15 +615,20 @@ Type Help anytime to see this menu again.");
         {
             AddUserMessage("Show Activity Log");
             ShowTyingIndicator();
-                
-            if (activityLog.Count == 0)
+
+            List<string> logs = db.GetActivityLogs();
+
+            HideTypingIndicator();
+
+            if (logs.Count == 0)
             {
                 await BotReply("Activity log is empty.");
                 return;
             }
+
             string logText = "Activity Log:\n\n";
             
-            foreach(string entry in activityLog.TakeLast(10))
+            foreach(string entry in logs)
             {
                 logText += entry + "\n";
             }
@@ -607,11 +637,13 @@ Type Help anytime to see this menu again.");
 
         private async void CompleteTask_Click(object sender, RoutedEventArgs e)
         {
+            AddUserMessage("Complete Task");
             ShowTyingIndicator();
             await BotReply("Type: complete task [TaskID]\n\nExample: complete task 1");
         }
         private async void DeleteTask_Click(object sender, RoutedEventArgs e)
         {
+            AddUserMessage("Delete Task");
             ShowTyingIndicator();
             await BotReply("Type: delete task [TaskID]\n\nExample: delete task 1");
         }
