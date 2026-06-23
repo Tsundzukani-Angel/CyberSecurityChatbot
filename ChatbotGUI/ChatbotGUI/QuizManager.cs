@@ -30,7 +30,7 @@ namespace ChatbotGUI
 
             Questions.Add(new Quiz(
 
-                 "What makes a strong password?\n A) 12345678\n B) A combination of letters, numbers, and symbols\n C) Your pet's name\n D) Your birth year",
+                 "What makes a strong password?\n\nA) 12345678\nB) A combination of letters, numbers, and symbols\nC) Your pet's name\nD) Your birth year",
                  "B",
                  "A strong password should be a combination of letters, numbers, and symbols to make it more difficult to guess or crack."
                 )
@@ -46,7 +46,7 @@ namespace ChatbotGUI
 
             Questions.Add(new Quiz(
             
-                "What is malware?\n A) A type of software designed to protect your computer\n B) A type of software that can harm your computer\n C) A type of hardware\n D) A type of network",
+                "What is malware?\n\nA) A type of software designed to protect your computer\nB) A type of software that can harm your computer\nC) A type of hardware\nD) A type of network",
                 "B",
                 "Malware is malicious software that can damage your computer, steal your information, or allow unauthorized access to your system."
               )
@@ -62,7 +62,7 @@ namespace ChatbotGUI
 
             Questions.Add(new Quiz(
             
-                "Which cybersecurity threat locks files and demands payment?\nA) Virus\nB) Ransomware\nC) Firewall\nD) Privacy",
+                "Which cybersecurity threat locks files and demands payment?\n\nA) Virus\nB) Ransomware\nC) Firewall\nD) Privacy",
                 "B",
                 "Ransomware encrypts files and demands money."
               )
@@ -78,7 +78,7 @@ namespace ChatbotGUI
 
             Questions.Add(new Quiz(
             
-                "What is the main purpose of a firewall?\nA) To speed up your internet connection\nB) To block unauthorized access to your network\nC) To store your files\nD) To create a backup of your data",
+                "What is the main purpose of a firewall?\n\nA) To speed up your internet connection\nB) To block unauthorized access to your network\nC) To store your files\nD) To create a backup of your data",
                 "B",
                 "A firewall monitors and filters network traffic to block unauthorized access. It acts as a barrier between your internal network and external networks, such as the internet."
               )
@@ -94,10 +94,75 @@ namespace ChatbotGUI
 
             Questions.Add(new Quiz(
             
-                "What should you check before clicking a link?\nA) URL\nB) Wallpaper\nC) Volume\nD) Brightness",
-                "a",
+                "What should you check before clicking a link?\n\nA) URL\nB) Wallpaper\nC) Volume\nD) Brightness",
+                "A",
                 "Always verify URLs before clicking. Make sure the URL looks legitimate and matches the expected destination."
               )
+            );
+
+            Questions.Add(new Quiz(
+
+                "You use the same password for your email, banking app, and social media account. A hacker obtains that password from a data breach on a shopping website. What cybersecurity risk does this create?\n\nA) Firewall bypass\nB) Password reuse attack\nC) Malware infection\nD) Ransomware attack",
+                "B",
+                "This is known as a password reuse attack. If one website is breached, attackers often try the same password on other accounts such as email, banking, and social media."
+
+               )
+            );
+
+            Questions.Add(new Quiz(
+
+                "True or False: Software updates can help protect against security vulnerabilities.",
+                "true",
+                "Software updates often include patches for security vulnerabilities, so keeping your software up to date is important for protecting your devices."
+              )
+            );
+
+            Questions.Add(new Quiz(
+
+                "What is two-factor authentication (2FA)?\n\nA) A method of logging in with just a password\nB) A method of logging in with a password and a second form of verification\nC) A method of logging in with just a fingerprint\nD) A method of logging in with just a username",
+                "B",
+                "Two-factor authentication (2FA) adds an extra layer of security by requiring not only a password but also a second form of verification, such as a code sent to your phone or a fingerprint scan."
+              )
+            );
+
+            Questions.Add(new Quiz(
+
+               "True or False: Two-factor authentication adds extra security to an account.",
+               "true",
+               "Two-factor authentication requires an extra verification step, making accounts harder to hack. "
+               )
+             );
+
+            Questions.Add(new Quiz(
+
+                "What should you do if you receive a suspicious email?\n\nA) Open it immediately\nB) Ignore all emails forever\nC) Verify the sender before clicking links\nD) Forward it to everyone",
+                "C",
+                "Always verify the sender and avoid clicking suspicious links. "
+               )
+            );
+
+            Questions.Add(new Quiz(
+
+                "True or False: Antivirus software should be updated regularly.",
+                "true",
+                "Updates help antivirus software detect the latest threats. This helps protect your device from new and emerging malware."
+                )
+            );
+
+            Questions.Add(new Quiz(
+
+                "Which of these is a social engineering attack?\n\nA) Phishing\nB) Firewall\nC) Encryption\nD) VPN",
+                "A",
+                "Phishing tricks people into revealing sensitive information. Phishing emails often appear to be from legitimate sources."
+                )
+            );
+
+            Questions.Add(new Quiz(
+
+                "True or False: Software updates often contain security fixes.",
+                "true",
+                "Updates patch vulnerabilities that attackers may exploit. Keeping your software up to date is crucial for maintaining security."
+                )
             );
         }
 
@@ -113,16 +178,43 @@ namespace ChatbotGUI
         public string CheckAnswer(string userAnswer)
         {
             Quiz currentQuiz = Questions[CurrentQuestion];
-            if(userAnswer.Trim().ToLower() == currentQuiz.Answer.Trim().ToLower())
+            string answer = userAnswer.Trim().ToLower();
+
+            //user doesn't know the answer
+            if(answer.Contains("don't know") ||
+                answer.Contains("idk") ||
+                answer.Contains("not sure") ||
+                answer.Contains("no idea") ||
+                answer.Contains("dont know"))
+            {
+                CurrentQuestion++;
+                return $"📚 That's okay! Learning is part of cybersecurity.\n\n" +
+                       $"Correct Answer: {currentQuiz.Answer}\n\n" +
+                       $"{currentQuiz.Explanation}";
+            }
+
+            //user skips question
+            if(answer.Contains("pass") || answer.Contains("skip"))
+            {
+                CurrentQuestion++;
+
+                return $"⏭ Question skipped.\n\n" +
+                       $"Correct Answer: {currentQuiz.Answer}\n\n" +
+                       $"{currentQuiz.Explanation}";
+            }
+
+            //correct answer
+            if (answer == currentQuiz.Answer.Trim().ToLower())
             {
                 Score++;
                 CurrentQuestion++;
-                return "✅Correct!\n " + currentQuiz.Explanation;
+                return $"✅Correct!\n\n{currentQuiz.Explanation}";
             }
 
             CurrentQuestion++;
-            return "❌Incorrect.\n " + currentQuiz.Explanation;
-            
+            return $"❌Incorrect.\n\n" +
+                   $"Correct Answer: {currentQuiz.Answer}\n\n" +
+                   $"{currentQuiz.Explanation}";
         }
         
         public bool IsQuizFinished()
@@ -146,7 +238,12 @@ namespace ChatbotGUI
             {
                 feedback = "You might want to review some cybersecurity concepts. Keep learning and practicing!";
             }
-            return $"Your final score is: {Score}/{Questions.Count}.\n\n{feedback}";
+
+            double percentage = ((double)Score / Questions.Count) * 100;
+
+            return $"Your final score is: {Score}/{Questions.Count}\n" +
+                   $"Percentage: {percentage:F0}%\n\n" +
+                   feedback;
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
 using System.Net.Quic;
 using System.Runtime.Intrinsics.X86;
 using System.Speech.Synthesis;
@@ -13,6 +15,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static Mysqlx.Error.Types;
 
 namespace ChatbotGUI
 {
@@ -59,19 +62,64 @@ namespace ChatbotGUI
                 string userInput = txtInput.Text;
 
                 string input = userInput.ToLower();
+
+
+                //check for exit commands
+                if (input.Contains("exit") || input.Contains("bye") ||
+                    input.Contains("goodbye"))
+                {
+                    AddUserMessage(userInput);
+                   
+                    string exitMessage = $"Goodbye {userName}! Stay safe online!";
+                    txtInput.Clear();
+
+                    ShowTypingIndicator();
+                    await Task.Delay(1500);
+                    HideTypingIndicator();
+
+                    if (chkVoice.IsChecked == true)
+                    {
+                        speech.Speak(exitMessage);
+                    }
+                   
+                    await TypeWriterEffect(exitMessage);
+                    
+                    await Task.Delay(2000);//close application after goodbye message
+                    Application.Current.Shutdown();
+                    return;
+                }
+                
+                if(input.Contains("cancel"))
+                {
+                    AddUserMessage(userInput);
+
+                    addingTask = false;
+                    waitingForDescription = false;
+                    waitingForReminder =false;
+
+                    taskTitle = "";
+                    taskDescription = "";
+
+                    txtInput.Clear();
+                    await BotReply("Task creation cancelled.");
+                    
+                    return;
+                }
                 //ask for task title
-                if (input.Contains("add task") ||
-                    input.Contains("create task") ||
+                if (input.Contains("add a task") ||
+                    input.Contains("create a task") ||
                     input.Contains("new task") ||
                     input.Contains("remind me to") ||
                     input.Contains("set a reminder") ||
-                    input.Contains("create reminder"))
+                    input.Contains("create a reminder"))
                 {
+                    AddUserMessage(userInput);
+
                     LogActivity("NLP recognized user intent to add a task.");
 
+                    txtInput.Clear();
                     addingTask = true;
                     await BotReply("Please enter the task title.");
-                    txtInput.Clear();
                     return;
                 }
 
@@ -80,12 +128,15 @@ namespace ChatbotGUI
                 {
                     taskTitle = userInput;
 
+                    AddUserMessage(userInput);
+
                     addingTask = false;
                     waitingForDescription = true;
 
+                    txtInput.Clear();
+
                     await BotReply("Please enter the task description.");
 
-                    txtInput.Clear();
                     return;
                 }
 
@@ -93,23 +144,38 @@ namespace ChatbotGUI
                 if (waitingForDescription)
                 {
                     taskDescription = userInput;
+
+                    AddUserMessage(userInput);
+
                     waitingForDescription = false;
                     waitingForReminder = true;
 
-                    await BotReply("Please enter a reminder date ( format: yyyy-MM-dd) or type NONE.");
+                   
+                    await BotReply("Please enter a reminder date and time" + " ( format: yyyy-MM-dd HH:mm) or type NONE.");
                     txtInput.Clear();
+
                     return;
                 }
 
                 //add task to database
                 if (waitingForReminder)
                 {
+                    AddUserMessage(userInput);
+
                     DateTime? reminderDate = null;
+
                     if (userInput.ToUpper() != "NONE")
                     {
-                        if (DateTime.TryParse(userInput, out DateTime date))//parse the date
+
+                        if (DateTime.TryParseExact(userInput, "yyyy-MM-dd HH:mm", null,
+                            System.Globalization.DateTimeStyles.None, out DateTime date))//parse the date
                         {
                             reminderDate = date;
+                        }
+                        else
+                        {
+                            await BotReply("Invalid format. Please use the format: 2026-12-01 09:00 or type NONE.");
+                            return;
                         }
                     }
                     db.AddTask(taskTitle, taskDescription, reminderDate);
@@ -121,9 +187,16 @@ namespace ChatbotGUI
                     //log reminder if date was set
                     if (reminderDate.HasValue)
                     {
-                        LogActivity($"Set reminder for task: {taskTitle} on {reminderDate.Value:yyyy-MM-dd}");
+                        LogActivity($"Set reminder for task: {taskTitle} on {reminderDate.Value:yyyy-MM-dd HH:mm}");
                     }
+                    //Reset everything
+                    addingTask = false;
                     waitingForReminder = false;
+                    waitingForDescription = false;
+
+                    taskTitle = "";
+                    taskDescription = "";
+
                     txtInput.Clear();
                     return;
                 }
@@ -162,18 +235,6 @@ namespace ChatbotGUI
                 txtInput.Clear();//clear input after sending message
                 txtInput.Focus();//focus on input after sending message
 
-                //check for exit commands
-                if (userInput.Trim().ToLower().Contains("exit") || userInput.Trim().ToLower().Contains("bye") ||
-                    userInput.Trim().ToLower().Contains("goodbye"))
-                {
-                    string exitMessage = $"Goodbye {userName}! Stay safe online!";
-                    speech.Speak(exitMessage);
-                    await TypeWriterEffect(exitMessage);
-                    await Task.Delay(2000);//close application after goodbye message
-                    Application.Current.Shutdown();
-                    return;
-                }
-
                 //check for activity log command
                 if (input.Contains("show activity log") ||
                     input.Contains("activity log") ||
@@ -183,16 +244,17 @@ namespace ChatbotGUI
                 {
                     LogActivity("NLP recognized user intent to view activity log.");
 
-                    if (activityLog.Count == 0)//check if log is empty
+                    List<string> logs = db.GetActivityLogs();
+                    if (logs.Count == 0)//check if log is empty
                     {
                         await BotReply("Your activity log is empty.");
                         return;
                     }
+
                     //display last 10 entries in activity log
                     string logOutput = "Activity Log:\n\n";
 
-                    List<string> logs = db.GetActivityLogs();
-                    foreach (string entry in logs)
+                    foreach (string entry in logs.TakeLast(10))
                     {
                         logOutput += entry + "\n";
                     }
@@ -204,6 +266,9 @@ namespace ChatbotGUI
                 if (input.Contains("start quiz") ||
                     input.Contains("play quiz") ||
                     input.Contains("quiz") ||
+                    input.Contains("test me") ||
+                    input.Contains("ask me questions") ||
+                    input.Contains("challenge me") ||
                     input.Contains("begin quiz"))
                 {
                     LogActivity("NLP recognized user intent to start a cybersecurity quiz.");
@@ -213,7 +278,7 @@ namespace ChatbotGUI
                     quizManager.Score = 0;
 
                     LogActivity("Started a cybersecurity quiz.");
-                    await BotReply("Cybersecurity Quiz Started!\n\nYou will be asked 10 questions. Type your answer and press Enter.\n\nLet's begin!\n\n" + quizManager.GetCurrentQuestion().Question);
+                    await BotReply("Cybersecurity Quiz Started!\n\nLet's begin!\n\n" + quizManager.GetCurrentQuestion().Question);
                     return;
                 }
 
@@ -223,42 +288,35 @@ namespace ChatbotGUI
                     return;
                 }
 
-                ShowTyingIndicator();
                 //get chatbot response
+                ShowTypingIndicator();
                 await Task.Delay(1000);
                 HideTypingIndicator();
 
                 string response = bot.GetResponse(userInput);
+               
 
                 if (input.Contains("help"))
                 {
-                    DisplayInstantMessage(@"AVAILABLE CYBERSECURITY TOPICS AND FEATURES
+                    DisplayInstantMessage(@"CYBERSECURITY TOPICS
 
-    CYBERSECURITY TOPICS
-    1. Password Security
-    2. Phishing Awareness
-    3. Malware
-    4. Privacy
-    5. Firewall
-    6. Hacker
-    7. Scam
-    8. Ransomware
-    9. Virus
-   
+  1.Password Security
+  2.Phishing Awareness
+  3.Malware
+  4.Privacy
+  5.Firewall
+  6.Hacker
+  7.Scam
+  8.Ransomware
+  9.Virus
 
-    TASK ASSISTANT
-    1. Show tasks
-    2. Complete task
-    3. Delete task
+Use the menu above for:
+  • Tasks
+  • Quiz
+  • Activity Log
+  • Exit
 
-    ACTIVITY LOG
-    • Show activity log
-
-    OTHER HELP COMMANDS 
-    • Help
-    • Bye / Exit
-
-    Type Help anytime to see this menu again.");
+Type Help anytime to see this menu again.");
                     return;
 
                 }
@@ -275,6 +333,7 @@ namespace ChatbotGUI
                     if (tasks.Count == 0)
                     {
                         await BotReply("You have no tasks at the moment.");
+                        return;
                     }
 
                     string taskList = "Your Tasks:\n\n";
@@ -283,7 +342,7 @@ namespace ChatbotGUI
                         taskList += $"ID: {task.TaskID}\n" +
                             $"Title: {task.Title}\n" +
                             $"Description: {task.Description}\n" +
-                            $"Reminder: {(task.ReminderDate.HasValue ? task.ReminderDate.Value.ToString("yyyy-MM-dd") : "None")}\n" +
+                            $"Reminder: {(task.ReminderDate.HasValue ? task.ReminderDate.Value.ToString("yyyy-MM-dd HH:mm") : "None")}\n" +
                             $"Status: {task.Status}\n";
                     }
                     await TypeWriterEffect(taskList);
@@ -291,9 +350,9 @@ namespace ChatbotGUI
                 }
 
                 //complete task command
-                if (input.StartsWith("complete task") ||
-                    input.StartsWith("finish task") ||
-                    input.StartsWith("mark task as complete"))
+                if (input.Contains("complete task") ||
+                    input.Contains("finish task") ||
+                    input.Contains("mark task as complete"))
                 {
                     LogActivity("NLP recognized user intent to complete a task.");
                     try
@@ -315,17 +374,19 @@ namespace ChatbotGUI
                 }
 
                 //delete task command
-                if (input.StartsWith("delete task") ||
-                    input.StartsWith("remove task") ||
-                    input.StartsWith("erase task"))
+                if (input.Contains("delete task"))
                 {
+
                     LogActivity("NLP recognized user intent to delete a task.");
+                  
                     try
                     {
+                       
                         string[] parts = userInput.Split(' ');
                         int taskId = int.Parse(parts[2]);
+
                         db.DeleteTask(taskId);
-                        await TypeWriterEffect($"Task {taskId} has been deleted.");
+                        await BotReply($"Task {taskId} has been deleted.");
                         await Task.Delay(1500);
                         LogActivity($"Deleted task: {taskId}");
                         return;
@@ -335,6 +396,13 @@ namespace ChatbotGUI
                         await BotReply("Please use the format: delete task 1");
                         return;
                     }
+                }
+                else if(input.Contains("delete a task") ||
+                    input.Contains("remove a task") ||
+                    input.Contains("erase a task"))
+                {
+                    await BotReply("Type: delete task [TaskID]\n\nExample: delete task 1");
+                    return;
                 }
 
                 if (chkVoice.IsChecked == true)
@@ -472,7 +540,7 @@ Type Help anytime to see this menu again.");
         }
 
         private Paragraph typingParagraph;
-        private void ShowTyingIndicator()
+        private void ShowTypingIndicator()
         {
             typingParagraph = new Paragraph(new Run("..."));
             typingParagraph.Foreground = Brushes.Gray;
@@ -502,9 +570,11 @@ Type Help anytime to see this menu again.");
 
         private async Task CheckQuizAnswer(string userAnswer)
         {
+            LogActivity($"Answered Quiz Question {quizManager.CurrentQuestion + 1}: {userAnswer}");
+           
             string feedback = quizManager.CheckAnswer(userAnswer);
 
-            await TypeWriterEffect(feedback);
+           await TypeWriterEffect(feedback);
 
             if (quizManager.IsQuizFinished())
             {
@@ -550,11 +620,13 @@ Type Help anytime to see this menu again.");
 
         private async Task BotReply(string message)
         {
-            ShowTyingIndicator();
+            ShowTypingIndicator();
             await Task.Delay(1000);
             HideTypingIndicator();
 
-            if(chkVoice.IsChecked == true)
+            db.SaveBotResponse(message);
+
+            if (chkVoice.IsChecked == true)
             {
                 speech.Speak(message);
             }
@@ -566,18 +638,24 @@ Type Help anytime to see this menu again.");
             AddUserMessage("Add Task");
             LogActivity("Opened Add Task menu");
 
-            ShowTyingIndicator();
-            
+            ShowTypingIndicator();
+            await Task.Delay(1000);
+            HideTypingIndicator();
+
             await BotReply("Please enter the task title.");
             addingTask = true;
         }
 
+        //show tasks click event handler
         private async void ShowTasks_Click(object sender, RoutedEventArgs e)
         {
             AddUserMessage("Show Tasks");
             LogActivity("Viewed all tasks");
 
-            ShowTyingIndicator();
+            ShowTypingIndicator();
+            await Task.Delay(1000);
+            HideTypingIndicator();
+
             List<TaskItem> tasks = db.GetAllTasks();
             if (tasks.Count == 0) 
             {
@@ -598,23 +676,37 @@ Type Help anytime to see this menu again.");
             await BotReply(taskList);
         }
 
+        //start quiz click event handler
         private async void StartQuiz_Click(object sender, RoutedEventArgs e)
         {
             AddUserMessage("Start Quiz");
 
             LogActivity("Started a cybersecurity quiz.");
-            ShowTyingIndicator();
+
+            ShowTypingIndicator();
+            await Task.Delay(1000);
+            HideTypingIndicator();
+
             quizManager.QuizMode = true;
             quizManager.CurrentQuestion = 0;
             quizManager.Score = 0;
 
-            await BotReply("Cyber Quiz Started!\n\n" + quizManager.GetCurrentQuestion().Question);
+            await BotReply(
+                 "Before we start, note that you can skip a question by just typing 'skip' or 'pass'.\n"+
+                 "If you're unsure of an answer, you can also type 'I don't know'.\n\n" +
+                 "🛡️ Cybersecurity Quiz Started!\n" +
+                 "Let's get started!\n" +
+                 quizManager.GetCurrentQuestion().Question);
         }
 
+        //show log click event handler
         private async void ShowLog_Click(object sender, RoutedEventArgs e)
         {
             AddUserMessage("Show Activity Log");
-            ShowTyingIndicator();
+
+            ShowTypingIndicator();
+            await Task.Delay(1000);
+            HideTypingIndicator();
 
             List<string> logs = db.GetActivityLogs();
 
@@ -630,27 +722,43 @@ Type Help anytime to see this menu again.");
             
             foreach(string entry in logs)
             {
-                logText += entry + "\n";
+                logText += entry + "\n\n";
             }
             await BotReply(logText);
         }
 
+        //complete task click event handler
         private async void CompleteTask_Click(object sender, RoutedEventArgs e)
         {
             AddUserMessage("Complete Task");
-            ShowTyingIndicator();
+
+            ShowTypingIndicator();
+            await Task.Delay(1000);
+            HideTypingIndicator();
+
             await BotReply("Type: complete task [TaskID]\n\nExample: complete task 1");
         }
+
+        //delete task click event handler
         private async void DeleteTask_Click(object sender, RoutedEventArgs e)
         {
             AddUserMessage("Delete Task");
-            ShowTyingIndicator();
+
+            ShowTypingIndicator();
+            await Task.Delay(1000);
+            HideTypingIndicator();
+
             await BotReply("Type: delete task [TaskID]\n\nExample: delete task 1");
         }
+
+        //help click event handler
         private async void Help_Click(object sender, RoutedEventArgs e)
         {
             AddUserMessage("Help");
-            ShowTyingIndicator();
+
+            ShowTypingIndicator();
+            await Task.Delay(1000);
+            HideTypingIndicator();
 
             DisplayInstantMessage(
         @"CYBERSECURITY TOPICS
@@ -673,8 +781,19 @@ Use the menu above for:
 
 Type Help anytime to see this menu again.");
         }
-        private void Exit_Click(object sender, RoutedEventArgs e)
+
+        private async void Exit_Click(object sender, RoutedEventArgs e)
         {
+            AddUserMessage("Exit");
+
+            ShowTypingIndicator();
+            await Task.Delay(900);
+            HideTypingIndicator();
+
+            await BotReply($"Goodbye {userName}! Stay safe online!");
+
+            await Task.Delay(2000);
+
             Application.Current.Shutdown();
         }
 

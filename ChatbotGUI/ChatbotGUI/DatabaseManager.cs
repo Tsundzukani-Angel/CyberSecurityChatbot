@@ -140,6 +140,18 @@ namespace ChatbotGUI
             }
             return logs;
         }
+        public void SaveBotResponse(string response)
+        {
+            string query = @"INSERT INTO ChatbotResponses(ResponseText) VALUES (@response)";
 
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@response", response);
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
+
 }

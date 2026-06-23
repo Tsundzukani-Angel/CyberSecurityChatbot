@@ -558,6 +558,7 @@ Running security scans regularly helps identify threats early."
             {
                 return userInput; //return the user input to be handled in MainWindow.xaml.cs
             }
+
             //keyword recognition
             foreach (var keyword in responses.Keys)
             {

@@ -73,7 +73,7 @@
         </Menu>
         
         
-        <Border  Margin="20,90,20,100"
+        <Border  Margin="20,80,20,100"
                  Padding="10"
                  Background="White"
                  CornerRadius="10">
