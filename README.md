@@ -197,6 +197,142 @@ Features Implemented
 
 <img width="1366" height="720" alt="Screenshot 2026-05-26 214012" src="https://github.com/user-attachments/assets/7ca49a07-dab9-40a5-ac5e-af35e0c1f0f5" />
 
+PART 3
+
+CBOT is Cybersecurity Awareness Chatbot developed using C# and WPF.
+the chatbot educates users about cyverseucrity topic such as: 
+ - Password Safety
+ - Phishing Awareness
+ - Malware
+ - Privacy Protection
+ - Firewalls
+ - Ransomware
+ - Online Scames
+The chtbot also includes task management, reminders, a cybersecurity quiz, activity loging, sentiment detection, and databse integration.
+
+FEATURES
+
+Part 1 Features:
+ 1. Greeting System
+    - User enters thei name at startup
+    - Personalised welcome message is displayed
+   
+ 2. Cybersecurity Knowledge Base
+    The Chatbot provides information on:
+    - Password safety
+    - Phishing
+    - Malware
+    - Privacy
+    - Firewalls
+    - Hackers
+    - Scams
+    - Viruses
+    - Ransomware
+   
+ 3. Sentiment detection
+    The chatbot recognises emotions like:
+    - Worried
+    - Nervous
+    - Scared
+    - Curious
+    Example:
+    User: I am worried about hackers
+    Bot: It's completely okay to feel worried about cybersecurity.
+         Learning safe habits already puts you ahead of many people.
+      
+  <img width="722" height="720" alt="Screenshot 2026-06-24 231503" src="https://github.com/user-attachments/assets/76fca6f5-5eb6-4b55-8b40-9aae5d78b51d" />
+
+  4. Voice Responses
+     Users can enable or disable speech responses using the Voice Enabled checkbox.
+
+Part 2 Features
+
+1. GUI Interface
+   Developed using WPF.
+   Features include:
+   - User Chat bubbles
+   - Bot Chat bubbles
+   - Typing indicator
+   - Navigation menu
+   - Voice Support
+   - Interactive Chatbot Interface
+
+Part 3 Features
+
+1. Task Assistant
+   - Users can create cybersecurity related tasks
+     
+2. Add Task/Reminder
+   <img width="631" height="545" alt="Screenshot 2026-06-20 213855" src="https://github.com/user-attachments/assets/8d726719-27fc-455e-99af-afd272f19b46" />
+
+3. View Task
+   <img width="722" height="720" alt="Screenshot 2026-06-24 232757" src="https://github.com/user-attachments/assets/c0165557-d78d-4805-8341-92e6562a1de0" />
+
+- Users can also Complete Task, delete tasks and also cancel a task mid creation.
+
+4. Database Integration
+   MySQL is used to store:
+   - Tasks
+      Stored Information:
+      - TaskID
+      - Title
+      - Description
+      - Reminder Date
+      - Status
+        
+   - Activity Logs
+     Stored Information:
+     - Timestamp
+     - User action
+
+   - Chatbot Responses
+     -All chatbot responses are stored in the database for tracking and reporting purposes.
+<img width="1366" height="720" alt="Screenshot 2026-06-25 001201" src="https://github.com/user-attachments/assets/77b7427b-9735-430d-8b9a-1ba2b6b8ff3d" />
+
+5. Cybersecurity Quiz
+   The chatbot contains more than 10 cybersecurity questions.
+   Both multiple choice questions and True/False questions.
+
+6. Quiz Features
+   - Immediate Feedabck
+   - Final score after quiz completions
+
+7. NLP Simulation
+   The Chatbot uses keybord detection and string matching to identify user intent.
+   Examples:
+   - Task Creation Recognizes:
+     - Add a task
+     - Create a task
+     - New task
+     - Remind me to
+     - Set a reminder
+
+    - Quiz Commands Recognizes:
+      - Start quiz
+      - Play quiz
+      - Test me
+      - Challenge me
+      - Ask me questions
+        
+    - Activity Log Commands Recognizes:
+      - Show activity log
+      - Recent activity
+      - Show history
+      - What have i done
+     This allows the chatbot to understand different wats users may phrase requests.
+
+HOW TO RUN 
+1. Open the project in Visual Studio.
+2. Ensure MySQL Server is Running.
+3. Configure the database connection string.
+4. Build the solution.
+5. Run the application.
+6. Enter your name when prompted.
+7. Start interacting with the chatbot.
+
+CONCLUSION
+
+- This project combines cybersecurity education tasks management, quiz-based learning, NLP simulation, database integration, activity tracking, voice interaction, and a graphical user interface to provide an interactive cybersecurity awareness experience for users.
   Author: Tsundzukani Angel Stoltz
   Diploma in IT (Software Development)
   Rosebank College
