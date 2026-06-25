@@ -321,6 +321,15 @@ Part 3 Features
       - What have i done
      This allows the chatbot to understand different wats users may phrase requests.
 
+TECHNOLOGIES USED
+1. C#
+2. WPF
+3. .NET
+4. MySQL
+5. XAML
+6. SpeechSynthesizer
+
+   
 HOW TO RUN 
 1. Open the project in Visual Studio.
 2. Ensure MySQL Server is Running.
